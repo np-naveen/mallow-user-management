@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { Username } from "../Styles";
 import { LogoutOutlined } from "@ant-design/icons";
 import { tokenService } from "../ApiUtils/service";
+import constant from "../Utils/constant";
 
 
 
@@ -22,7 +23,7 @@ const MenuBar = () => {
         style={{ padding: "0 20px", height: "64px" }}
         gap='16px'
       >
-        <Username>Naveen Prabhu</Username>
+        <Username>{localStorage.getItem(constant.USERNAME)}</Username>
         <Tooltip title="Logout">
             <Button type="primary" danger shape="circle" icon={<LogoutOutlined />} onClick={handleLogout}/>
           </Tooltip>
