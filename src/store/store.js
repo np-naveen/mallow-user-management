@@ -6,6 +6,7 @@ const initialHomeState = {
   pageNo: 1,
   totalPages: 0,
   userData: [],
+  loading:false,
   modalAction: {
     visible: false,
     action: "",
@@ -17,6 +18,7 @@ const initialHomeState = {
     email: "",
     profile_img_link: "",
   },
+  modalBtnLoading: false
 };
 
 function homeReducer(state = initialHomeState, action) {
@@ -47,6 +49,16 @@ function homeReducer(state = initialHomeState, action) {
             ...state.formData,
             ...action.payload,
         }
+      }
+    case constant.MODAL_BTN_LOADING:
+      return {
+        ...state,
+        modalBtnLoading: action.payload
+      }
+    case constant.LOADING:
+      return {
+        ...state,
+        loading: action.payload
       }
     default:
       return state;
