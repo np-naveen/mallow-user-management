@@ -74,3 +74,9 @@ export const ProfileCard = styled.div`
     opacity: 1;
   }
 `;
+
+export const SpinContainer = styled.div`
+  width:100px;
+  margin:auto;
+  height:400px;
+`
