@@ -30,3 +30,22 @@ export const getRequest = async (url) => {
     );
   }
 };
+
+export const putRequest = async (url, data) => {
+  try {
+    const response = await axios.put(url, data, headers);
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const deleteRequest = async (url,data) => {
+  try{
+    const response = await axios.delete(url,headers)
+    return response
+  }catch(e){
+    console.log(e)
+    throw new Error(e.message)
+  }
+}

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { FormCard } from "../Styles";
 import constant from "../Utils/constant";
-import { createUser } from "../ApiUtils/service";
+import { createUser, updateUser } from "../ApiUtils/service";
 
 const UserForm = (props) => {
   const [form] = Form.useForm();
@@ -21,13 +21,6 @@ const UserForm = (props) => {
     });
   };
 
-  useEffect(() => {
-    messageApi.open({
-      type: "success",
-      content: "User added successfully",
-    });
-  }, []);
-
   const handleFormSubmit = async () => {
     try {
       dispatch({
@@ -40,12 +33,11 @@ const UserForm = (props) => {
       if (!(first_name && last_name && profile_img_link && email)) {
         return;
       }
-
+      let reqBody = {
+       ...formData,
+       avatar: formData.profile_img_link
+      };
       if (modalAction.action == "create") {
-        let reqBody = {
-          name: `${first_name} ${last_name}`,
-          job: "leader",
-        };
         const res = await createUser(reqBody);
         if (res) {
           messageApi.open({
@@ -59,7 +51,22 @@ const UserForm = (props) => {
             });
           }, 1000);
         }
+      } else {
+        const res = await updateUser(modalAction.data.id,reqBody);
+         if (res) {
+          messageApi.open({
+            type: "success",
+            content: "User updated successfully",
+          });
+          setTimeout(() => {
+            dispatch({
+              type: constant.MODAL_ACTION,
+              payload: { visible: false, action: "", data:{} },
+            });
+          }, 1000);
+        }
       }
+      props.callBack()
     } catch (e) {
       console.log(e);
     } finally {
@@ -69,6 +76,22 @@ const UserForm = (props) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (modalAction.action == "edit") {
+      let obj = {
+        first_name: modalAction.data.first_name,
+        last_name: modalAction.data.last_name,
+        email: modalAction.data.email,
+        profile_img_link: modalAction.data.avatar,
+      };
+      dispatch({
+        type: constant.FORMDATA,
+        payload: obj,
+      });
+      form.setFieldsValue(obj);
+    }
+  }, []);
 
   return (
     <>
@@ -102,7 +125,7 @@ const UserForm = (props) => {
               { required: true, message: "Please input your first name!" },
             ]}
           >
-            <Input placeholder="First Name" value={formData.first_name} />
+            <Input placeholder="First Name" />
           </Form.Item>
           <Form.Item
             name="last_name"
@@ -111,7 +134,7 @@ const UserForm = (props) => {
               { required: true, message: "Please input your last name!" },
             ]}
           >
-            <Input placeholder="Last Name" value={formData.last_name} />
+            <Input placeholder="Last Name" />
           </Form.Item>
           <Form.Item
             name="email"
@@ -121,7 +144,7 @@ const UserForm = (props) => {
               { type: "email", message: "Please enter a valid email address!" },
             ]}
           >
-            <Input placeholder="Email" value={formData.email} />
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="profile_img_link"
@@ -134,10 +157,7 @@ const UserForm = (props) => {
               { type: "url", message: "Please enter a valid URL!" },
             ]}
           >
-            <Input
-              placeholder="Profile Image Link"
-              value={formData.profile_img_link}
-            />
+            <Input placeholder="Profile Image Link" />
           </Form.Item>
         </Form>
       </Modal>

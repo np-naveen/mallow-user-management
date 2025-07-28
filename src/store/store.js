@@ -1,10 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, current } from "@reduxjs/toolkit";
 import constant from "../Utils/constant";
 
 const initialHomeState = {
   mode: "table",
-  pageNo: 1,
-  totalPages: 0,
+  pageDetails:{
+    totalRecord:'',
+    currentPage:1
+  },
   userData: [],
   loading:false,
   modalAction: {
@@ -59,6 +61,14 @@ function homeReducer(state = initialHomeState, action) {
       return {
         ...state,
         loading: action.payload
+      }
+    case constant.PAGE_DETAILS:
+      return {
+        ...state,
+        pageDetails:{
+          ...state.pageDetails,
+          ...action.payload
+        }
       }
     default:
       return state;

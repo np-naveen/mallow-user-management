@@ -1,7 +1,17 @@
 import React from "react";
 import { Flex, Table, Button } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import constant from "../Utils/constant";
 
-const AntdTable = ({ data }) => {
+const AntdTable = ({ data, handleDelete }) => {
+    const dispatch = useDispatch();
+  const handleEdit = (data) => {
+    dispatch({
+      type: constant.MODAL_ACTION,
+      payload: { visible: true, action: "edit", data: data },
+    });
+  };
+
   const column = [
     {
       title: "",
@@ -37,18 +47,29 @@ const AntdTable = ({ data }) => {
     {
       title: "Action",
       dataIndex: "id",
-      key:"id",
-      render: (_,record) => (<>
-      <Flex gap='10px'>
-        <Button type="primary">Edit</Button>
-        <Button danger type="primary" variant="solid">Delete</Button>
-      </Flex>
-      </>)
-    }
+      key: "id",
+      render: (_, record) => (
+        <>
+          <Flex gap="10px">
+            <Button type="primary" onClick={() => handleEdit(record)}>
+              Edit
+            </Button>
+            <Button danger type="primary" variant="solid" onClick={()=> {handleDelete(record)}}>
+              Delete
+            </Button>
+          </Flex>
+        </>
+      ),
+    },
   ];
   return (
     <div>
-      <Table dataSource={data} columns={column} />
+      <Table
+        dataSource={data}
+        columns={column}
+        pagination={false}
+        defaultPageSize={6}
+      />
     </div>
   );
 };
