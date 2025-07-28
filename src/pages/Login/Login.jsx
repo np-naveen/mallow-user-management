@@ -7,6 +7,7 @@ import { LoginCard, LoginContainer } from "../../Styles";
 import endpoint from "../../Utils/endpoint";
 import { postRequest } from "../../ApiUtils/requestComponent";
 import { tokenService } from "../../ApiUtils/service";
+import constant from "../../Utils/constant";
 
 const Login = () => {
   const [form] = Form.useForm();
@@ -22,7 +23,7 @@ const Login = () => {
       password,
     });
     if (response) {
-      console.log("Login successful", response);
+      localStorage.setItem(constant.USERNAME,username)
       tokenService.setToken(response.token);
       navigate("/");
     }
